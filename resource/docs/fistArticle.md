@@ -6,4 +6,4 @@
 
 ## 实际应用
 
-![](resource/images/20181111-test.png)
+<!-- ![](../images/20181111-test.png) -->
