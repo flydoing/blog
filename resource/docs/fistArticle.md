@@ -7,3 +7,7 @@
 ## 实际应用
 
 ![](resource/images/20181111-test.png)
+
+![](https://github.com/gjincai/blog/blob/master/resource/images/20181111-test.png)
+
+![](../images/20181111-test.png)
