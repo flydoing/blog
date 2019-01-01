@@ -159,3 +159,5 @@ htmlStr = htmlStr.replace(re2, '<img src="my-default.png"/>')
 
 console.log(htmlStr)
 ```
+
+<!-- 深入参考： https://juejin.im/post/5965943ff265da6c30653879 -->
