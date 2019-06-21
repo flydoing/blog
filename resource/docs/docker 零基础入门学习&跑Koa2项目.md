@@ -1,33 +1,41 @@
 
-# docker零入门到跑koa2
+# docker 零基础入门学习&跑Koa2项目
 
-## install
-官方下载，浏览器下载很慢，用迅雷下
+零基础开始学习一下docker，记录一些过程、笔记
 
-正常软件安装 
+## docker安装与登录
+
+**下载**
+
+直接官网下载回来，跟普通软件的安装是一样：[https://docs.docker.com/](https://docs.docker.com/)
+
+> 备注：浏览器直接下载很慢，建议用迅雷下载；完了跟普通软件一样正常安装就好
+
+**验证安装**
+
 
 ```
-# 验证安装
-docker version
-docker info
+# 启动docker后，命令行输入以下、验证安装
+$ docker version
+$ docker info
 
 # 列出本机的所有 image 文件。
 $ docker image ls
 
-# 创建docker id
-docker image pull library/hello-word
+# 未创建docker id，会提示登录
+$ docker image pull library/hello-word
 Using default tag: latest
 Error response from daemon: pull access denied for hello-word, repository does not exist or may require 'docker login'
 
 ```
 
-[创建docker 账户id](https://hub.docker.com/?utm_source=docker4mac_2.0.0.3&utm_medium=account_create&utm_campaign=referral)
+所以先去注册登录：
+[注册创建docker 账户id](https://hub.docker.com/?utm_source=docker4mac_2.0.0.3&utm_medium=account_create&utm_campaign=referral)
 
-gjincai
-1262868349@qq.com
-gjincaikop
+有了账号后，就可以登录了：
+
 ```
-docker login
+$ docker login
 Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
 Username: gjincai
 Password:
@@ -35,21 +43,23 @@ Login Succeeded
 ```
 
 ## 配置国内镜像加速
+国内连接 Docker 的官方仓库很慢，可参考这里配置以下：
 [配置国内镜像加速](https://github.com/yeasy/docker_practice/blob/master/install/mirror.md)
 
-## hello world
-需要先登录
+## 跑个 hello world
+
+登录后，跑个hello world
 
 ```
-#docker image pull是抓取 image 文件的命令
+# docker image pull是抓取 image 文件的命令
 
-docker image pull library/hello-world
+$ docker image pull library/hello-world
 
-#Docker 官方提供的 image 文件，都放在library组里面，所以它的是默认组，可以省略
+# Docker 官方提供的 image 文件，都放在library组里面，所以它的是默认组，可以省略
 
-docker image pull hello-world
+$ docker image pull hello-world
 
-#docker container run命令具有自动抓取 image 文件的功能。如果发现本地没有指定的 image 文件，就会从仓库自动抓取。因此，前面的docker image pull命令并不是必需的步骤。
+# docker container run命令具有自动抓取 image 文件的功能。如果发现本地没有指定的 image 文件，就会从仓库自动抓取。因此，前面的docker image pull命令并不是必需的步骤。
 
 docker container run hello-world
 
@@ -60,11 +70,12 @@ latest: Pulling from library/hello-world
 
 ```
 
+列出容器：
+
 ```
 ## 列出本机正在运行的容器:无
 docker container ls
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-
 
 ## 列出本机所有容器，包括终止运行的容器：刚运行的一个
 docker container ls --all
@@ -72,7 +83,9 @@ CONTAINER ID        IMAGE               COMMAND             CREATED             
 80b79d2a0257        hello-world         "/hello"            9 minutes ago       Exited (0) 9 minutes ago                       goofy_ptolemy
 ```
 
-终止容器运行 `docker container kill` 命令
+停止容器运行 `docker container stop`，
+
+终止容器运行 `docker container kill`，
 
 终止运行的容器文件，依然会占据硬盘空间，可以使用 `docker container rm` 命令删除。
 
@@ -80,7 +93,7 @@ CONTAINER ID        IMAGE               COMMAND             CREATED             
 # 删除刚才的hello world
 # docker container rm [containerID]
 
-docker container rm 80b79d2a0257
+$ docker container rm 80b79d2a0257
 80b79d2a0257
 
 #删完后，变为空
@@ -88,9 +101,9 @@ docker container ls --all
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 ```
 
-跑个nginx：
-```
+## 跑个nginx：
 
+```
 # 1.run
 docker run -d -p 80:80 --name webserver nginx
 Unable to find image 'nginx:latest' locally
@@ -106,11 +119,11 @@ docker rm webserver
 ```
 
 
-Dockerfile文件
-阮一峰
-建立koa项目，nodemon跑一次
+## Dockerfile文件创建image镜像: 跑 Koa2 项目
 
 koa2-learn/learn-docker-koa根目录下，建立dockerfile文件：
+
+> [learn-docker-koa源码](https://github.com/gjincai/koa2-learn/tree/master/learn-docker-koa)
 
 ```
 FROM node:10.15.3
@@ -120,10 +133,10 @@ RUN npm install --registry=https://registry.npm.taobao.org
 EXPOSE 3000
 ```
 
-创建image文件，镜像:根目录下，build
+创建image镜像文件: 在根目录下，build
 
 ```
-$ docker image build -t learn-docker--koa .
+$ docker image build -t learn-docker-koa .
 Sending build context to Docker daemon  18.94kB
 Step 1/5 : FROM node:10.15.3
 10.15.3: Pulling from library/node
@@ -178,29 +191,34 @@ Successfully built 9d09a0284622
 Successfully tagged learn-docker--koa:latest
 ```
 
-查看image：
+查看image镜像：
+
 ```
 $ docker image ls
 REPOSITORY          TAG                 IMAGE ID            CREATED              SIZE
-learn-docker--koa   latest              9d09a0284622        About a minute ago   901MB
+learn-docker-koa    latest              9d09a0284622        About a minute ago   901MB
 node                10.15.3             64c810caf95a        3 weeks ago          899MB
 nginx               latest              f09fe80eb0e7        2 months ago         109MB
 hello-world         latest              fce289e99eb9        3 months ago         1.84kB
 ```
 
-image:删除，重命名：
+> image: 删除，重命名，参考以下：
+<br> https://stackoverflow.com/questions/25211198/docker-how-to-change-repository-name-or-rename-image
+<br> https://github.com/yeasy/docker_practice/blob/master/image/rm.md
 
-```
-https://stackoverflow.com/questions/25211198/docker-how-to-change-repository-name-or-rename-image
-https://github.com/yeasy/docker_practice/blob/master/image/rm.md
-```
-
-生成容器：
+## 生成容器：
 
 ```
 $ docker container run -p 8000:3000 -it learn-docker-koa /bin/bash
 root@94e46d12ccab:/app#
 ```
+
+> <br> -p参数：容器的 3000 端口映射到本机的 8000 端口。
+<br> -it参数：容器的 Shell 映射到当前的 Shell，然后你在本机窗口输入的命令，就会传入容器。
+<br> learn-docker-koa：image 文件的名字（如果有标签，还需要提供标签，默认是 latest 标签）。
+<br> /bin/bash：容器启动以后，内部第一个执行的命令。这里是启动 Bash，保证用户可以使用 Shell。
+<br> **注意：** /bin/bash 会把 Dockerfile 的 CMD 命令给覆盖
+
 这表示你已经在容器里面了，返回的提示符就是容器内部的 Shell 提示符。执行下面的命令,执行普通shell命令
 
 ```
@@ -213,10 +231,59 @@ root@94e46d12ccab:/app# node app.js
 starting at port 3000...
 ```
 
-浏览器打开：http://127.0.0.1:8000/v1/
+浏览器打开：[http://127.0.0.1:8000/v3/](http://127.0.0.1:8000/v3/)
 
 Ctrl + c 停止 Node 进程，然后按下 Ctrl + d （或者输入 exit）退出容器
 
+## 重启容器
 
+对已经stop的container, 进行start:
 
-跑koa2项目
+```
+# 查看当前容器：正在运行的 ls，已停止的 ls --all
+docker container ls
+docker container ls --all
+```
+
+对容器进行操作常用命令：
+
+重启容器：`start,restart,stop,kill`
+
+进入容器：`docker exec -it b5eb4d0bcc6d bash`
+
+> 参考： https://yeasy.gitbooks.io/docker_practice/container/attach_exec.html
+
+进入容器后，正常的bash操作
+
+** Dockerfile 新增 CMD命令：
+
+```
+FROM node:10.15.3
+COPY . /app
+WORKDIR /app
+RUN npm install --registry=https://registry.npm.taobao.org
+EXPOSE 3000
+# CMD node app.js
+CMD ["npm", "start"]
+```
+
+注意，指定了CMD命令以后，docker container run命令就不能附加命令了（比如前面的/bin/bash），否则它会覆盖CMD命令
+
+```
+$ docker container run -p 8000:3000 -it learn-docker-koa-v3 /bin/bash
+$ docker container run -p 8000:3000 -it learn-docker-koa-v3
+```
+
+## vscode 与 docker
+
+> 参考： [https://github.com/liwei0526vip/vscode/blob/master/30%20!%20%E5%A6%82%E4%BD%95%E5%9C%A8VS%20Code%E4%B8%AD%E9%85%8D%E7%BD%AE%E3%80%81%E9%83%A8%E7%BD%B2%E5%92%8C%E8%B0%83%E8%AF%95Docker%EF%BC%9F.md](https://github.com/liwei0526vip/vscode/blob/master/30%20!%20%E5%A6%82%E4%BD%95%E5%9C%A8VS%20Code%E4%B8%AD%E9%85%8D%E7%BD%AE%E3%80%81%E9%83%A8%E7%BD%B2%E5%92%8C%E8%B0%83%E8%AF%95Docker%EF%BC%9F.md)
+
+## 学习参考
+
+> <br> [阮一峰: Docker 入门教程](http://www.ruanyifeng.com/blog/2018/02/docker-tutorial.html)
+<br> [https://github.com/yeasy/docker_practice](https://github.com/yeasy/docker_practice)
+
+## 后续学习：
+
+1. dockerFile文件的详细编写
+2. 更新版本时，只是更新代码、不用 rebuild 镜像 Image
